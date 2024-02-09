@@ -1,10 +1,10 @@
 import osmnx as ox
-import logging
 import matplotlib.pyplot as plt
 import geopandas
 import networkx
 
-def set_figure(figsize:tuple=[12,12]):
+
+def set_figure(figsize: tuple = None):
     """Initialize the figure
 
     Args:
@@ -13,7 +13,10 @@ def set_figure(figsize:tuple=[12,12]):
     Returns:
         plt.subplots: figure
     """
-    return plt.subplots(figsize=figsize, constrained_layout = True)
+    if figsize is None:
+        figsize = [12, 12]
+    return plt.subplots(figsize=figsize, constrained_layout=True)
+
 
 def add_graph(graph, ax, layer, background_color=None):
     """Add the graph to the figure ax
@@ -24,7 +27,7 @@ def add_graph(graph, ax, layer, background_color=None):
         layer (_type_): _description_
         background_color (_type_, optional): _description_. Defaults to None.
     """
-    
+
     if isinstance(graph, geopandas.geodataframe.GeoDataFrame):
 
         color = layer.get("options").get("color")
@@ -34,21 +37,22 @@ def add_graph(graph, ax, layer, background_color=None):
             facecolor=color,
             edgecolor=color,
             linewidth=width,
-            ax = ax)
+            ax=ax)
 
     elif isinstance(graph, networkx.classes.multidigraph.MultiDiGraph):
 
         graph, widths = update_graph(graph, layer)
 
         ox.plot_graph(graph,
-            #bgcolor=background_color,
-            edge_color="w",
-            edge_linewidth=widths,
-            node_size=0,
-            save=False, 
-            show=False,
-            ax=ax)
-    
+                      # bgcolor=background_color,
+                      edge_color="w",
+                      edge_linewidth=widths,
+                      node_size=0,
+                      save=False,
+                      show=False,
+                      ax=ax)
+
+
 def update_graph(graph, layer):
     """Update the widths of elements of the graph
 
@@ -60,16 +64,15 @@ def update_graph(graph, layer):
         _type_: _description_
     """
 
-    #ox_colors = []
+    # ox_colors = []
     ox_widths = []
     errors_idx = []
 
-    for idx, (u, v, data) in enumerate(graph.edges(keys=False, data=True)):
-
+    for u, v, data in graph.edges(keys=False, data=True):
         filter_major = layer.get("filter_major")
 
         if filter_major in data.keys():
-            
+
             data_minor = data.get(filter_major)
 
             if isinstance(data_minor, list):
@@ -77,16 +80,16 @@ def update_graph(graph, layer):
             filter_options = layer.get("options")
 
             if data_minor in filter_options.keys():
-                #color = filter_options.get(data_minor).get("color")
+                # color = filter_options.get(data_minor).get("color")
                 width = filter_options.get(data_minor).get("width")
             elif 'other' in filter_options.keys():
-                #color = filter_options.get("other").get("color")
+                # color = filter_options.get("other").get("color")
                 width = filter_options.get("other").get("width")
             else:
-                #color = filter_options.get("color")
-                width = filter_options.get("width")   
+                # color = filter_options.get("color")
+                width = filter_options.get("width")
 
-            #ox_colors.append("#ffffff")
+                # ox_colors.append("#ffffff")
             ox_widths.append(width)
 
         else:
@@ -97,36 +100,42 @@ def update_graph(graph, layer):
 
     return graph, ox_widths
 
-def build_filter(
-    config:dict,
-    ):
-    
 
-    filter_ma = config.get("filter_major", None)
-    filter_mi = config.get("filter_minor", None)
+def build_filter(
+        config: dict,
+):
+    filter_ma = config.get("filter_major")
+    filter_mi = config.get("filter_minor")
 
     if filter_ma and filter_mi:
-        return f"""["{filter_ma}"~"{filter_mi}"]""" 
+        return f"""["{filter_ma}"~"{filter_mi}"]"""
     else:
         return None
 
-def get_geometry(config:dict, places:tuple=[]):
-    return ox.geometries.geometries_from_place(places, tags = {config.get("filter_major"): config.get("filter_minor")})
 
-def get_roads(config:dict, places:tuple=[]):
+def get_geometry(config: dict, places: tuple = None):
+    if places is None:
+        places = []
+    return ox.geometries.geometries_from_place(places, tags={config.get("filter_major"): config.get("filter_minor")})
 
+
+def get_roads(config: dict, places: tuple = None):
+    if places is None:
+        places = []
     custom_filter = build_filter(config)
 
-    return ox.graph_from_place(places, 
-                    network_type='all_private', 
-                    simplify=True, 
-                    retain_all=True, 
-                    truncate_by_edge=True, 
-                    clean_periphery=True, 
-                    custom_filter=custom_filter)
+    return ox.graph_from_place(places,
+                               network_type='all_private',
+                               simplify=True,
+                               retain_all=True,
+                               truncate_by_edge=True,
+                               clean_periphery=True,
+                               custom_filter=custom_filter)
 
-def generate_graph(config:dict, places:tuple=[]):
 
+def generate_graph(config: dict, places: tuple = None):
+    if places is None:
+        places = []
     if config.get("type") == "roads":
         return get_roads(config, places=places)
 

@@ -21,17 +21,17 @@ Once created, you will have a png and a pdf version of your poster.
 
 Here are some examples :
 
-<img src="modern-city-poster/assets/berlin.png" width="500px" height="500px">
-<img src="modern-city-poster/assets/oslo.png" width="250px" height="50%">
-<img src="modern-city-poster/assets/helsinki.png" width="250px" height="50%">
-<img src="modern-city-poster/assets/nairobi.png" width="300px" height="50%">
-<img src="modern-city-poster/assets/denver.png" width="210px" height="50%">
+<img src="modern-city-poster/assets/berlin.png" style="width: 50%; height: 50%" alt="Berlin Poster">
+<img src="modern-city-poster/assets/oslo.png" style="width: 50%; height: 50%" alt="Oslo Poster">
+<img src="modern-city-poster/assets/helsinki.png" style="width: 50%; height: 50%" alt="Helsinki Poster">
+<img src="modern-city-poster/assets/nairobi.png" style="width: 50%; height: 50%" alt="Nairobi Poster">
+<img src="modern-city-poster/assets/denver.png" style="width: 50%; height: 50%" alt="Denver Poster">
 
 ## Installation
 
 Install the required packages :
 
-``pip install -r requirements.txt``
+``poetry install``
 
 ## Usage
 
@@ -41,8 +41,8 @@ The creation of a poster from a new location can take a lot of time (more than 5
 
 To summarize :
 
-- edit the location : 5-10 minutes
-- edit the other settings  : 5 seconds
+- edit the location: 5-10 minutes
+- edit the other settings: 5 seconds
 
 
 ### Terminal
@@ -51,5 +51,5 @@ To build your poster(s) from the terminal, run `python posters.py`. This command
 
 ### Streamlit
 
-Easy ! Run the streamlit server with `streamlit run stream.py` from the `modern-city-poster` folder and edit the configuration in the sidebar. You can then download your poster as a pdf or a png file.
+Easy! Run the streamlit server with `streamlit run stream.py` from the `modern-city-poster` folder and edit the configuration in the sidebar. You can then download your poster as a pdf or a png file.
 
